@@ -3,12 +3,21 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ImageView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:background="#FFFFBB33"
-        android:contentDescription="@string/app_name"
-        android:scaleType="center" />
+        android:layout_height="50dp"
+        android:background="#FFFFBB33">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Add Appointment"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
 
     <EditText
         android:id="@+id/editTextDate"
@@ -32,6 +41,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
+
         android:text="Name" />
 
     <EditText

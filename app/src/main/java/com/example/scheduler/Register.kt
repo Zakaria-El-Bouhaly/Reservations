@@ -58,41 +58,44 @@ class Register : AppCompatActivity() {
             val pass: String = psdfield.text.toString()
             val pass_conf: String = psdconfrfield.text.toString()
 
-            if (pass != pass_conf) {
-                val toast = Toast.makeText(this, "passwords don't match", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.TOP, 0, 0)
-                toast.show()
+            if (username != "" && pass != "" && pass_conf != "") {
 
-            } else {
+                if (pass != pass_conf) {
+                    val toast = Toast.makeText(this, "passwords don't match", Toast.LENGTH_SHORT)
+                    toast.setGravity(Gravity.TOP, 0, 0)
+                    toast.show()
 
-                // on below line we are creating a new user by passing email and password.
-                mAuth?.createUserWithEmailAndPassword(username, pass)?.addOnCompleteListener(
-                    object : OnCompleteListener<AuthResult> {
-                        override fun onComplete(task: Task<AuthResult>) {
-                            if (task.isSuccessful) {
-                                progressbar.visibility = View.GONE
-                                Toast.makeText(
-                                    this@Register,
-                                    "User Registered..",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                val i = Intent(this@Register, Login::class.java)
-                                startActivity(i)
-                                finish()
-                            } else {
-                                progressbar.visibility = View.GONE
-                                Toast.makeText(
-                                    this@Register,
-                                    "Fail to register user..",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                } else {
+
+                    // on below line we are creating a new user by passing email and password.
+                    mAuth?.createUserWithEmailAndPassword(username, pass)?.addOnCompleteListener(
+                        object : OnCompleteListener<AuthResult> {
+                            override fun onComplete(task: Task<AuthResult>) {
+                                if (task.isSuccessful) {
+                                    progressbar.visibility = View.GONE
+                                    Toast.makeText(
+                                        this@Register,
+                                        "User Registered..",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    val i = Intent(this@Register, Login::class.java)
+                                    startActivity(i)
+                                    finish()
+                                } else {
+                                    progressbar.visibility = View.GONE
+                                    Toast.makeText(
+                                        this@Register,
+                                        "Fail to register user..",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                }
+
                             }
 
                         }
-
-                    }
-                )
+                    )
+                }
             }
         }
     }
@@ -103,7 +106,7 @@ class Register : AppCompatActivity() {
         if (user != null) {
             // if the user is not null then we are
             // opening a main activity on below line.
-            val i = Intent(this, Add_appointment::class.java)
+            val i = Intent(this, HomeActivity::class.java)
             startActivity(i)
             finish()
         }

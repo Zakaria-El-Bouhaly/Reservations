@@ -44,27 +44,32 @@ class Login : AppCompatActivity() {
             val username: String = usernamefield.text.toString()
             val pass: String = psdfield.text.toString()
 
-            mAuth?.signInWithEmailAndPassword(username, pass)?.addOnCompleteListener(
-                object : OnCompleteListener<AuthResult> {
-                    override fun onComplete(task: Task<AuthResult>) {
-                        if (task.isSuccessful) {
-                            Toast.makeText(
-                                this@Login,
-                                "Logged In.." + mAuth?.currentUser.toString(),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            val i = Intent(this@Login, Add_appointment::class.java)
-                            startActivity(i)
-                            finish()
 
-                        } else {
-                            Toast.makeText(this@Login, "Fail to login..", Toast.LENGTH_SHORT)
-                                .show()
+            if (username != "" && pass != "" ) {
+
+
+                mAuth?.signInWithEmailAndPassword(username, pass)?.addOnCompleteListener(
+                    object : OnCompleteListener<AuthResult> {
+                        override fun onComplete(task: Task<AuthResult>) {
+                            if (task.isSuccessful) {
+                                Toast.makeText(
+                                    this@Login,
+                                    "Logged In.." + mAuth?.currentUser.toString(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val i = Intent(this@Login, HomeActivity::class.java)
+                                startActivity(i)
+                                finish()
+
+                            } else {
+                                Toast.makeText(this@Login, "Fail to login..", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
                         }
-
                     }
-                }
-            )
+                )
+            }
         }
     }
 
@@ -74,7 +79,7 @@ class Login : AppCompatActivity() {
         if (user != null) {
             // if the user is not null then we are
             // opening a main activity on below line.
-            val i = Intent(this, Add_appointment::class.java)
+            val i = Intent(this, HomeActivity::class.java)
             startActivity(i)
             finish()
         }

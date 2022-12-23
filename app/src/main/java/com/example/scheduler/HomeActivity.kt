@@ -48,7 +48,7 @@ class HomeActivity : AppCompatActivity() {
         myauth = FirebaseAuth.getInstance()
         dbref = database.getReference("appointments")
 
-        val usersApp = dbref
+        val usersApp = dbref.orderByChild("userId").equalTo(myauth.currentUser?.uid.toString())
 
 
 

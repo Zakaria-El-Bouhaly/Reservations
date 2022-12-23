@@ -7,26 +7,14 @@
     tools:context=".Register">
 
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/idPBLoading"
-        app:layout_constraintEnd_toEndOf="@+id/registerbtn"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/registerbtn"
-        app:layout_constraintTop_toBottomOf="@+id/signin" />
-
     <Button
         android:id="@+id/registerbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:text="Register"
         app:layout_constraintBottom_toTopOf="@+id/signin"
         app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName"
         app:layout_constraintTop_toBottomOf="@+id/psd2" />
 
@@ -34,11 +22,12 @@
         android:id="@+id/psd2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:ems="10"
+        android:hint="confirm password"
         android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/registerbtn"
         app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName"
         app:layout_constraintTop_toBottomOf="@+id/pass" />
 
@@ -46,11 +35,12 @@
         android:id="@+id/pass"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:ems="10"
+        android:hint="password"
         android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/psd2"
         app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
 
@@ -58,39 +48,35 @@
         android:id="@+id/editTextTextPersonName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:ems="10"
+        android:hint="Email"
         android:inputType="textEmailAddress"
-        android:text="Name"
         app:layout_constraintBottom_toTopOf="@+id/pass"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ProgressBar
-        android:id="@+id/idPBLoading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:indeterminate="true"
-
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/registerbtn"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/registerbtn"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
         android:id="@+id/signin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:text="Login"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintBottom_toTopOf="@+id/google_signin"
         app:layout_constraintEnd_toEndOf="@+id/registerbtn"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/registerbtn"
         app:layout_constraintTop_toBottomOf="@+id/registerbtn" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/google_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/registerbtn"
+        app:layout_constraintStart_toStartOf="@+id/registerbtn"
+        app:layout_constraintTop_toBottomOf="@+id/signin" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,7 +3,6 @@ package com.example.scheduler
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,9 +27,6 @@ class Register : AppCompatActivity() {
     private lateinit var registerbtn: Button
     private lateinit var loginbtn: Button
 
-    private lateinit var googleSignIn: SignInButton
-    private lateinit var googleSignInClient: GoogleSignInClient
-
     private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,18 +39,8 @@ class Register : AppCompatActivity() {
 
         registerbtn = findViewById(R.id.registerbtn)
         loginbtn = findViewById(R.id.signin)
-        googleSignIn = findViewById(R.id.google_signin)
 
         mAuth = FirebaseAuth.getInstance()
-
-
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
-
 
         var intent: Intent?
 
@@ -109,50 +95,6 @@ class Register : AppCompatActivity() {
                         }
                     )
                 }
-            }
-        }
-
-        googleSignIn.setOnClickListener {
-            signInGoogle()
-        }
-
-
-    }
-
-    private fun signInGoogle() {
-        val signInIntent = googleSignInClient.signInIntent
-        launcher.launch(signInIntent)
-    }
-
-    private val launcher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                if (task.isSuccessful) {
-                    val account: GoogleSignInAccount? = task.result
-                    if (account != null) {
-                        updateUI(account)
-                    }
-                } else {
-                    Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
-
-    private fun updateUI(account: GoogleSignInAccount) {
-        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-
-        mAuth.signInWithCredential(credential).addOnCompleteListener {
-            if (it.isSuccessful) {
-                val intent = Intent(this, HomeActivity::class.java)
-//                intent.putExtra("email", account.email)
-//                intent.putExtra("name", account.displayName)
-                startActivity(intent)
-            } else {
-                Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
-
             }
         }
     }

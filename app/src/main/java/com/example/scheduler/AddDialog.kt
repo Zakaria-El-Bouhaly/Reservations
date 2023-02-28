@@ -2,56 +2,86 @@ package com.example.scheduler
 
 import android.app.Dialog
 import android.content.DialogInterface
+import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.view.View
+import android.util.Log
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.scheduler.Models.Appointment
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.example.scheduler.databinding.AddDialogBinding
+import com.example1.projectapp.viewModels.AppointmentViewModel
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 
 
-class AddDialog(val edit: Boolean, val EditAppoint: Appointment?) : DialogFragment() {
-    lateinit var date: EditText
-    lateinit var time: EditText
-    lateinit var descr: EditText
-    lateinit var phone: EditText
-    lateinit var database: FirebaseDatabase
-    lateinit var dbref: DatabaseReference
-    lateinit var myauth: FirebaseAuth
+class AddDialog(private val edit: Boolean, private val EditAppoint: Appointment?) : DialogFragment() {
+    private lateinit var date: EditText
+    private lateinit var time: EditText
+    private lateinit var descr: EditText
+    private lateinit var phone: EditText
 
+    private lateinit var appointmentViewModel: AppointmentViewModel
+    private lateinit var binding: AddDialogBinding
+
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { myact ->
-            val builder = AlertDialog.Builder(myact)
+            val builder = MaterialAlertDialogBuilder(myact)
             // Get the layout inflater
-            val inflater = requireActivity().layoutInflater;
+            val inflater = requireActivity().layoutInflater
 
             // Inflate and set the layout for the dialog
             // Pass null as the parent view because its going in the dialog layout
-            val dialogView: View = inflater.inflate(R.layout.add_dialog, null)
+            binding = AddDialogBinding.inflate(inflater)
 
-            date = dialogView.findViewById(R.id.editTextDate)
-            time = dialogView.findViewById(R.id.editTextTime)
-            descr = dialogView.findViewById(R.id.desc_field)
-            phone = dialogView.findViewById(R.id.editTextNumber)
 
+            date = binding.editTextDate
+
+
+            date.setOnClickListener {
+                val datePicker =
+                    MaterialDatePicker.Builder.datePicker()
+                        .setTitleText("Select date")
+                        .build()
+
+                datePicker.show(childFragmentManager, "date")
+                datePicker.addOnPositiveButtonClickListener {
+                    Log.i("TIIIIIIIIIIIIIIIIIIIIIIME", datePicker.selection.toString())
+                    date.setText(datePicker.headerText)
+                }
+            }
+
+            time = binding.editTextTime
+            time.setOnClickListener {
+                val timepicker = MaterialTimePicker
+                    .Builder()
+                    .setTitleText("Select a time").setTimeFormat(TimeFormat.CLOCK_24H)
+                    .build()
+
+                timepicker.show(childFragmentManager, "tag")
+                timepicker.addOnPositiveButtonClickListener {
+                    time.setText("${timepicker.hour}:${timepicker.minute}")
+                }
+
+            }
+
+            descr = binding.descField
+            phone = binding.editTextNumber
 
             var title_text = "Add"
 
-
-            database = FirebaseDatabase.getInstance()
-            myauth = FirebaseAuth.getInstance()
-            dbref = database.getReference("appointments")
-
-
+            appointmentViewModel = ViewModelProvider(
+                this,
+                defaultViewModelProviderFactory
+            )[AppointmentViewModel::class.java]
 
             if (edit) {
-                val title = dialogView.findViewById<TextView>(R.id.title)
+                val title = binding.title
                 date.setText(EditAppoint?.date)
                 time.setText(EditAppoint?.time)
                 descr.setText(EditAppoint?.description)
@@ -62,64 +92,45 @@ class AddDialog(val edit: Boolean, val EditAppoint: Appointment?) : DialogFragme
             }
 
 
-            builder.setView(dialogView)
+            builder.setView(binding.root)
                 // Add action buttons
-                .setPositiveButton(title_text,
+                .setPositiveButton(
+                    title_text,
                     DialogInterface.OnClickListener { dialog, id ->
+
+                        val app = Appointment(
+                            "",
+                            "",
+                            date.text.toString(),
+                            time.text.toString(),
+                            descr.text.toString(),
+                            phone.text.toString()
+                        )
+
                         if (edit) {
-                            val newApp = Appointment(
-                                EditAppoint?.appId!!, myauth.currentUser?.uid,
-                                date.text.toString(),
-                                time.text.toString(),
-                                descr.text.toString(),
-                                phone.text.toString()
-                            )
-                            val row = dbref.child(EditAppoint?.appId!!).setValue(newApp)
-                                .addOnCompleteListener {
-                                    Toast.makeText(
-                                        myact,
-                                        "Data Updated successfully",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-
+                            app.appId = EditAppoint?.appId!!
+                            if (appointmentViewModel.upcreateAppoint(app)) {
+                                Toast.makeText(myact, "Edited", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(myact, "Failed", Toast.LENGTH_SHORT).show()
+                            }
                         } else {
-                            val appId = dbref.push().key
-                            val App = Appointment(
-                                appId!!,
-                                myauth.currentUser?.uid,
-                                date.text.toString(),
-                                time.text.toString(),
-                                descr.text.toString(),
-                                phone.text.toString()
-                            )
+                            app.appId = ""
+                            if (appointmentViewModel.upcreateAppoint(app)) {
+                                Toast.makeText(
+                                    myact,
+                                    "Data inserted successfully",
+                                    Toast.LENGTH_LONG
+                                ).show()
 
-                            dbref.child(appId!!).setValue(App)
-                                .addOnCompleteListener {
-                                    Toast.makeText(
-                                        myact,
-                                        "Data inserted successfully",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-
-//                                    date.text.clear()
-//                                    time.text.clear()
-//                                    phone.text.clear()
-//                                    descr.text.clear()
-
-
-                                }.addOnFailureListener { err ->
-                                    Toast.makeText(
-                                        myact,
-                                        "Error ${err.message}",
-                                        Toast.LENGTH_LONG
-                                    )
-                                        .show()
-                                }
+                            } else {
+                                Toast.makeText(
+                                    myact, "Failed", Toast.LENGTH_LONG
+                                ).show()
+                            }
 
                         }
-                    })
-                .setNegativeButton("Cancel",
+                    }).setNegativeButton("Cancel",
                     DialogInterface.OnClickListener { dialog, id ->
                         getDialog()?.cancel()
                     })

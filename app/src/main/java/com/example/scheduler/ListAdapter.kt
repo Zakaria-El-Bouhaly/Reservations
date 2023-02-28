@@ -3,20 +3,21 @@ package com.example.scheduler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduler.Models.Appointment
 
-class ListAdapter(val ctx: HomeActivity, val data: ArrayList<Appointment>) :
+class ListAdapter(private val ctx: HomeActivity, private val data: ArrayList<Appointment>) :
     RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
 
     class MyViewHolder(val row: View) : RecyclerView.ViewHolder(row) {
-        val textView_datetime = row.findViewById<TextView>(R.id.time_date)
-        val textView_description = row.findViewById<TextView>(R.id.description)
-        val textView_number = row.findViewById<TextView>(R.id.number)
-        val editbtn = row.findViewById<ImageView>(R.id.editbtn)
-        val deletebtn = row.findViewById<ImageView>(R.id.deletebtn)
+        val textView_datetime: TextView = row.findViewById<TextView>(R.id.time_date)
+        val textView_description: TextView = row.findViewById<TextView>(R.id.description)
+        val textView_number: TextView = row.findViewById<TextView>(R.id.number)
+        val editbtn = row.findViewById<Button>(R.id.editbtn)
+        val deletebtn = row.findViewById<Button>(R.id.deletebtn)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -37,7 +38,6 @@ class ListAdapter(val ctx: HomeActivity, val data: ArrayList<Appointment>) :
         holder.deletebtn.setOnClickListener {
             val DelDialog = ConfDialog(theAppointment.appId);
             DelDialog.show(ctx.supportFragmentManager, null)
-
         }
 
 

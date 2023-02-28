@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
 class LoginTest {
 
     @get:Rule
-    val myActScenarioTest = ActivityScenarioRule(Login::class.java)
+    val myActScenarioTest = ActivityScenarioRule(MainActivity::class.java)
 
 
     @Test

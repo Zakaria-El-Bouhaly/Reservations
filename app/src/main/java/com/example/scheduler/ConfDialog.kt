@@ -8,8 +8,13 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example1.projectapp.viewModels.AppointmentViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.launch
 
 
 class ConfDialog(val AppId: String) : DialogFragment() {
@@ -32,10 +37,13 @@ class ConfDialog(val AppId: String) : DialogFragment() {
             builder.setMessage("delete appointement")
                 .setPositiveButton("Delete",
                     DialogInterface.OnClickListener { dialog, id ->
-                        if (appointmentViewModel.deleteAppoint(AppId)) {
-                            Toast.makeText(it, "Deleted", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(it, "Failed", Toast.LENGTH_SHORT).show()
+                        lifecycleScope.launch {
+                            val result=appointmentViewModel.deleteAppoint(AppId).single()
+                            if (result) {
+                                Toast.makeText(it, "Deleted", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(it, "Failed", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     })
                 .setNegativeButton("Cancel",

@@ -1,7 +1,6 @@
 package com.example.scheduler.repositories
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.scheduler.Models.Appointment
@@ -11,6 +10,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.tasks.await
 
 class AppointmentRepoImpl : AppointmentRepo {
 
@@ -21,9 +25,7 @@ class AppointmentRepoImpl : AppointmentRepo {
     override fun getAllAppoints(): LiveData<List<Appointment>> {
 
         val usersApp = dbref.orderByChild("userId").equalTo(myauth.currentUser?.uid.toString())
-
-        var gson = Gson()
-
+        val gson = Gson()
         val liveapps = MutableLiveData<List<Appointment>>()
         val listapps = ArrayList<Appointment>()
 
@@ -34,7 +36,7 @@ class AppointmentRepoImpl : AppointmentRepo {
                 val value = dataSnapshot.children
                 for (v in value) {
                     val json = Gson().toJson(v.value)
-                    var data = gson.fromJson(json, Appointment::class.java)
+                    val data = gson.fromJson(json, Appointment::class.java)
                     listapps.add(data!!)
                 }
 
@@ -50,31 +52,32 @@ class AppointmentRepoImpl : AppointmentRepo {
     }
 
 
-    override fun upcreateAppoint(app: Appointment): Boolean {
-        var result: Boolean = true
-        if (app.appId == "") {
-            app.appId = dbref.push().key.toString()
-        }
-        app.userId = myauth.currentUser?.uid
+    override fun upcreateAppoint(app: Appointment): Flow<Boolean> {
+        return flow {
+            try {
+                if (app.appId == "") {
+                    app.appId = dbref.push().key.toString()
+                }
+                app.userId = myauth.currentUser?.uid
 
-        val row = dbref.child(app.appId).setValue(app)
-            .addOnCompleteListener {
-                result = true
-            }.addOnFailureListener {
-                result = false
+                val task = dbref.child(app.appId).setValue(app).await()
+
+                emit(true)
+            } catch (e: Exception) {
+                emit(false)
             }
-
-        return result
+        }.flowOn(Dispatchers.Default)
     }
 
-    override fun deleteAppoint(appId: String): Boolean {
-        var result: Boolean = true
-        dbref.child(appId).removeValue().addOnCompleteListener {
-            result = true
-        }.addOnFailureListener {
-            result = false
+    override fun deleteAppoint(appId: String): Flow<Boolean> {
+        return flow {
+            try {
+                val result = dbref.child(appId).removeValue().await()
+                emit(true)
+            } catch (e: Exception) {
+                emit(false)
+            }
         }
-        return result
     }
 
 }

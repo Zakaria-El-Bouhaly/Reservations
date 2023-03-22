@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.scheduler.Models.Appointment
 import com.example.scheduler.repositories.AppointmentRepo
 import com.example.scheduler.repositories.AppointmentRepoImpl
+import kotlinx.coroutines.flow.Flow
 
 class AppointmentViewModel() : ViewModel() {
     private val repository: AppointmentRepo
@@ -19,11 +20,11 @@ class AppointmentViewModel() : ViewModel() {
         return repository.getAllAppoints()
     }
 
-    fun upcreateAppoint(app: Appointment): Boolean {
+    fun upcreateAppoint(app: Appointment): Flow<Boolean> {
         return repository.upcreateAppoint(app)
     }
 
-    fun deleteAppoint(id: String): Boolean {
+    fun deleteAppoint(id: String): Flow<Boolean>{
         return repository.deleteAppoint(id)
     }
 }

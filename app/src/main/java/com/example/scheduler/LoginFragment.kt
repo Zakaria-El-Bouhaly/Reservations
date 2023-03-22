@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.scheduler.Models.LoginDto
 import com.example.scheduler.Models.User
 import com.example.scheduler.databinding.FrgmtLoginBinding
@@ -23,6 +24,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.launch
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -80,18 +83,21 @@ class LoginFragment : Fragment() {
 
             if (username != "" && pass != "") {
                 val loginCred = LoginDto(username, pass)
-                var result = userViewModel.login(loginCred)
-                Log.i("TRUU2", result.toString())
-                if (result) {
-                    Toast.makeText(
-                        activity,
-                        "Logged In",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    redirectHome(User("", "", ""))
-                } else {
-                    Toast.makeText(activity, "Fail to login..", Toast.LENGTH_SHORT)
-                        .show()
+
+                lifecycleScope.launch {
+                    val result = userViewModel.login(loginCred).single()
+                    Log.i("TRUUU2", result.toString())
+                    if (result) {
+                        Toast.makeText(
+                            activity,
+                            "Logged In",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        redirectHome(User("", "", ""))
+                    } else {
+                        Toast.makeText(activity, "Fail to login..", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
         }
@@ -137,6 +143,7 @@ class LoginFragment : Fragment() {
 
     private fun signInWithGoogleAuthCredential(googleAuthCredential: AuthCredential) {
         userViewModel.signInWithGoogle(googleAuthCredential)
+
         userViewModel.currentUser.observe(
             this
         ) {

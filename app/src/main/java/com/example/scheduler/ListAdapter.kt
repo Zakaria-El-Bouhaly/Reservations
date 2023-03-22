@@ -1,13 +1,16 @@
 package com.example.scheduler
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduler.Models.Appointment
+import com.example.scheduler.helpers.DateTimeHelper
 
 class ListAdapter(private val ctx: HomeActivity, private val data: ArrayList<Appointment>) :
     RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
@@ -25,10 +28,18 @@ class ListAdapter(private val ctx: HomeActivity, private val data: ArrayList<App
         return MyViewHolder(layout)
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val theAppointment = data.get(position)
 
-        holder.textView_datetime.text = "${theAppointment.date}  ${theAppointment.time}"
+        val fullDateTime =
+            "${DateTimeHelper.getFormattedDate(theAppointment.date)}  ${
+                DateTimeHelper.getHourMinute(
+                    theAppointment.time
+                )
+            }"
+        holder.textView_datetime.text = fullDateTime
+
         holder.textView_description.text = data.get(position).description
         holder.textView_number.text = data.get(position).num
         holder.editbtn.setOnClickListener {

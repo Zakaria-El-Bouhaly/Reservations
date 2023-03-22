@@ -21,28 +21,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="end"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/deletebtn"
+                style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Widget.Material3.Button.IconButton"
-                app:icon="@drawable/ic_baseline_delete_forever_24"
-                app:iconSize="30dp"
                 android:background="@android:color/transparent"
-                android:layout_weight="1" />
+                app:icon="@drawable/ic_baseline_delete_forever_24"
+                app:iconSize="30dp" />
 
             <Button
                 android:id="@+id/editbtn"
+                style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Widget.Material3.Button.IconButton"
+                android:background="@android:color/transparent"
                 app:icon="@drawable/ic_baseline_edit_24"
                 app:iconGravity="end"
-                app:iconSize="30dp"
-                android:background="@android:color/transparent"
-                android:layout_weight="1"/>
+                app:iconSize="30dp" />
         </LinearLayout>
 
         <TextView

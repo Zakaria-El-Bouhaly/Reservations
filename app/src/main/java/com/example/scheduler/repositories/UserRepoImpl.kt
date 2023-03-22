@@ -1,21 +1,16 @@
 package com.example.scheduler.repositories
 
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.example.scheduler.Models.LoginDto
 import com.example.scheduler.Models.RegisterDto
 import com.example.scheduler.Models.User
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 
 
@@ -23,25 +18,33 @@ class UserRepoImpl : UserRepo {
 
     private val myAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    @OptIn(DelicateCoroutinesApi::class)
-    override fun login(loginDto: LoginDto): Boolean {
-        var result = false
-        val task = myAuth.signInWithEmailAndPassword(loginDto.email, loginDto.password)
-        GlobalScope.launch(Dispatchers.IO) {
-            task.await()
-            result = task.isSuccessful
-        }
-        return result
+
+    override fun login(loginDto: LoginDto): Flow<Boolean> {
+        return flow {
+
+            try {
+                myAuth.signInWithEmailAndPassword(loginDto.email, loginDto.password).await()
+                emit(true)
+            } catch (e: Exception) {
+                emit(false)
+            }
+        }.flowOn(Dispatchers.Default)
     }
 
-    override fun register(registerDto: RegisterDto): Boolean {
-        var result = false
-        myAuth.createUserWithEmailAndPassword(registerDto.email, registerDto.password)
-            .addOnCompleteListener { task ->
-                result = task.isSuccessful
+
+    override fun register(registerDto: RegisterDto): Flow<Boolean> {
+        return flow {
+            try {
+                var task =
+                    myAuth.createUserWithEmailAndPassword(registerDto.email, registerDto.password)
+                        .await()
+                emit(true);
+            } catch (e: Exception) {
+                emit(false);
             }
-        return result
+        }.flowOn(Dispatchers.Default)
     }
+
 
     override fun firebaseLogin(googleAuthCredential: AuthCredential): MutableLiveData<User> {
         val authenticatedUserMutableLiveData = MutableLiveData<User>()
@@ -71,9 +74,7 @@ class UserRepoImpl : UserRepo {
             val name = firebaseUser.displayName ?: "User"
             val email = firebaseUser.email
             val user = User(
-                uid,
-                name,
-                email!!
+                uid, name, email!!
             )
             user.isAuth = true
 

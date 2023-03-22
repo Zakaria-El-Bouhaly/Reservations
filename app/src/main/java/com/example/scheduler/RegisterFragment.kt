@@ -10,9 +10,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.scheduler.Models.RegisterDto
 import com.example.scheduler.databinding.FrgmtRegisterBinding
 import com.example.scheduler.viewModels.UserViewModel
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -67,7 +70,7 @@ class RegisterFragment : Fragment() {
             val passConf: String = psdconfrfield.text.toString()
 
             if (username != "" && pass != "" && passConf != "") {
-                
+
                 if (pass != passConf) {
                     val toast =
                         Toast.makeText(activity, "passwords don't match", Toast.LENGTH_SHORT)
@@ -77,12 +80,15 @@ class RegisterFragment : Fragment() {
                 } else {
                     val registerDto = RegisterDto(username, pass, passConf)
 
-                    if (userViewModel.register(registerDto)) {
-                        Toast.makeText(activity, "User Registered..", Toast.LENGTH_SHORT).show()
+                    lifecycleScope.launch {
 
-                    } else {
-                        Toast.makeText(activity, "Fail to register user..", Toast.LENGTH_SHORT)
-                            .show()
+                        var result = userViewModel.register(registerDto).single()
+                        if (result) {
+                            Toast.makeText(activity, "User Registered..", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(activity, "Fail to register user..", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
                 }
             }

@@ -8,11 +8,13 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduler.Models.Appointment
 import com.example.scheduler.helpers.DateTimeHelper
 
-class ListAdapter(private val ctx: HomeActivity, private val data: ArrayList<Appointment>) :
+class ListAdapter(private val lifecycle:LifecycleCoroutineScope,private val ctx: HomeActivity, private val data: ArrayList<Appointment>) :
     RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
 
     class MyViewHolder(val row: View) : RecyclerView.ViewHolder(row) {
@@ -43,7 +45,7 @@ class ListAdapter(private val ctx: HomeActivity, private val data: ArrayList<App
         holder.textView_description.text = data.get(position).description
         holder.textView_number.text = data.get(position).num
         holder.editbtn.setOnClickListener {
-            val EditDialog = AddDialog(true, theAppointment)
+            val EditDialog = AddDialog(lifecycle,true, theAppointment)
             EditDialog.show(ctx.supportFragmentManager, null)
         }
         holder.deletebtn.setOnClickListener {

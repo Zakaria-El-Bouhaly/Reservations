@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.scheduler.Models.Appointment
@@ -20,12 +21,13 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.launch
 
 
-class AddDialog(private val edit: Boolean, private val EditAppoint: Appointment?) :
+class AddDialog(private val lifecycle: LifecycleCoroutineScope, private val edit: Boolean, private val EditAppoint: Appointment?) :
     DialogFragment() {
     private lateinit var date: EditText
     private lateinit var time: EditText
@@ -132,9 +134,9 @@ class AddDialog(private val edit: Boolean, private val EditAppoint: Appointment?
 
                         if (edit) {
                             app.appId = EditAppoint?.appId!!
-                            lifecycleScope.launch {
-                                val result =
-                                    appointmentViewModel.upcreateAppoint(app).singleOrNull()
+                            lifecycle.launch {
+                                var result = appointmentViewModel.upcreateAppoint(app).singleOrNull()
+
                                 Log.i("FLOOOOOOW", "idkman")
                                 if (result == true) {
                                     Toast.makeText(myact, "Edited", Toast.LENGTH_SHORT).show()
@@ -144,7 +146,7 @@ class AddDialog(private val edit: Boolean, private val EditAppoint: Appointment?
                             }
                         } else {
                             app.appId = ""
-                            lifecycleScope.launch {
+                            lifecycle.launch {
                                 val result = appointmentViewModel.upcreateAppoint(app).single()
                                 Log.i("NEEEEEEW", result.toString())
                                 if (result) {

@@ -11,6 +11,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduler.Models.Appointment
@@ -51,7 +52,7 @@ class HomeActivity : AppCompatActivity() {
 
         myfab = findViewById(R.id.fab)
         myfab.setOnClickListener {
-            val dialog = AddDialog(false, null)
+            val dialog = AddDialog(lifecycleScope,false, null)
             dialog.show(supportFragmentManager, null)
         }
 
@@ -61,7 +62,7 @@ class HomeActivity : AppCompatActivity() {
 
         allapp = ArrayList<Appointment>()
 
-        val adapter = ListAdapter(this, allapp)
+        val adapter = ListAdapter(lifecycleScope,this, allapp)
         appList.adapter = adapter
 
         val appointmentViewModel = ViewModelProvider(

@@ -2,8 +2,8 @@
 an Android app that uses firebase to store reservations and allows you to edit, delete and add appointments with ease also it lets you sign in with your google account and uses material 3 design for a modern and user-friendly interface.
 
 ## Authentication
-![1](https://user-images.githubusercontent.com/104870424/233060544-e4e2c78b-42ea-4d1f-a4f3-fccd28c82ee6.png)
-![2](https://user-images.githubusercontent.com/104870424/233060589-99465e2e-b768-4844-90f0-a118b7809092.png)
+![1](https://user-images.githubusercontent.com/104870424/233060544-e4e2c78b-42ea-4d1f-a4f3-fccd28c82ee6.png) ![2](https://user-images.githubusercontent.com/104870424/233060589-99465e2e-b768-4844-90f0-a118b7809092.png)
+
 ## Add Reservation
 ![3](https://user-images.githubusercontent.com/104870424/233060694-ee1313d3-b8e8-47a3-8143-2746c2d93bcf.png)
 ![4](https://user-images.githubusercontent.com/104870424/233060736-4f0a1263-a0e8-4a71-bbfa-bb2660b87b43.png)
